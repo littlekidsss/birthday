@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday, My Love ♡</title>
+  <meta name="description" content="For the one I love — a tiny website full of our memories." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fff7fb; --ink:#3b2a2f; --ink-soft:#6a4b55; --primary:#ff6fa3; --accent:#ffd1e1;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink); background:radial-gradient(1200px 800px at 80% -100px, #ffe3ef 10%, transparent 50%),radial-gradient(1000px 600px at -20% -200px, #ffeef6 10%, transparent 50%), var(--bg);}
+    a{color:var(--primary)}
+    .container{max-width:960px; margin:0 auto; padding:24px}
+    header{display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 16px 32px}
+    .script{font-family:"Great Vibes", cursive; font-size:56px; line-height:1; color:#ef3f7f; text-shadow:0 2px 0 #fff}
+    .sub{opacity:.8}
+    .btn{display:inline-flex; align-items:center; gap:8px; border:none; border-radius:999px; padding:12px 18px; background:var(--primary); color:#fff; font-weight:600; cursor:pointer; box-shadow:0 8px 20px rgba(255,111,163,.35); transition:transform .1s ease}
+    .btn:hover{transform:translateY(-1px)}
+    .pill{background:var(--accent); color:#8a4a62; padding:6px 12px; border-radius:999px; font-weight:600; display:inline-block}
+    .card{background:#fff; border:1px solid #f5dbe6; border-radius:20px; padding:18px; box-shadow:0 10px 30px rgba(255,111,163,.08)}
+    .grid{display:grid; gap:16px}
+    .grid.m2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.m3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:720px){ .grid.m2,.grid.m3{grid-template-columns:1fr} header{padding-top:36px} .script{font-size:44px}}
+
+    /* Typewriter */
+    .type{border-right:2px solid var(--primary); white-space:nowrap; overflow:hidden}
+
+    /* Timeline */
+    .timeline{position:relative; margin:24px 0}
+    .timeline:before{content:""; position:absolute; left:calc(12px + .5rem); top:0; bottom:0; width:3px; background:linear-gradient(var(--primary),#ffc3d6)}
+    .t-item{position:relative; padding-left:56px; margin:22px 0}
+    .t-dot{position:absolute; width:22px; height:22px; border-radius:50%; left:0; top:2px; background:#fff; border:4px solid var(--primary); box-shadow:0 4px 20px rgba(255,111,163,.3)}
+
+    /* Gallery */
+    .gallery{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+    .gallery img{width:100%; height:200px; object-fit:cover; border-radius:14px; transition:transform .2s ease; cursor:pointer}
+    .gallery img:hover{transform:translateY(-2px)}
+    @media (max-width:720px){ .gallery{grid-template-columns:repeat(2,1fr)} }
+    
+    /* Lightbox */
+    .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:40}
+    .lightbox.open{display:flex}
+    .lightbox img{max-width:90vw; max-height:80vh; border-radius:12px}
+
+    /* Floating hearts */
+    .hearts{pointer-events:none; position:fixed; inset:0; overflow:hidden; z-index:10}
+    .heart{position:absolute; width:14px; height:14px; transform:rotate(45deg); background:var(--primary); opacity:.6; animation:float 6s linear forwards}
+    .heart:before,.heart:after{content:""; position:absolute; width:14px; height:14px; background:var(--primary); border-radius:50%}
+    .heart:before{left:-7px}
+    .heart:after{top:-7px}
+    @keyframes float{0%{transform:translateY(0) rotate(45deg)} 100%{transform:translateY(-120vh) rotate(45deg); opacity:0}}
+
+    /* Fireworks on click */
+    canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:20}
+
+    footer{padding:48px 0 72px; text-align:center; opacity:.8}
+  </style>
+</head>
+<body>
+  <div class="hearts" aria-hidden="true"></div>
+  <canvas id="fx"></canvas>
+
+  <header class="container">
+    <span class="pill">🎂 Happy Birthday</span>
+    <h1 class="script">给最爱的你</h1>
+    <p class="type" id="typewriter"></p>
+    <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap">
+      <button class="btn" id="playBtn">🎵 播放/暂停我们的歌</button>
+      <button class="btn" id="confettiBtn">🎉 小惊喜</button>
+    </div>
+    <p class="sub">倒计时：<span id="countdown">--:--:--</span></p>
+  </header>
+
+  <main class="container" style="display:grid; gap:28px">
+    <!-- Love Letter -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">一封小情书 💌</h2>
+      <p style="margin:0; line-height:1.8">
+        亲爱的 <strong>（她的名字）</strong>，<br/>
+        这一页，藏着我想说的每一句悄悄话。谢谢你出现在我的日常里，让普通的日子都变得发光。愿你的每一个愿望，都有人为你点亮。<br/>
+        <em>—— 署名（可以换成你的小名）</em>
+      </p>
+    </section>
+
+    <!-- Timeline -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">Our Story · 我们的时间线 ⏳</h2>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <h3 style="margin:0">第一次见面 <small style="opacity:.6">2023-08-23</small></h3>
+          <p style="margin:.25rem 0 0">那天的风很温柔，你的笑也很温柔。</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <h3 style="margin:0">第一次旅行 <small style="opacity:.6">2024-02-18</small></h3>
+          <p style="margin:.25rem 0 0">在海边，我们一起追着夕阳跑。</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <h3 style="margin:0">今天 · 生日快乐 <small style="opacity:.6" id="todayLabel"></small></h3>
+          <p style="margin:.25rem 0 0">愿你此后每一年，都被温柔以待。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">相册 · Our Gallery 📷</h2>
+      <p class="sub" style="margin:0 0 10px">把你们的照片放进 <code>images/</code> 文件夹，然后在下面替换图片路径。</p>
+      <div class="gallery" id="gallery">
+        <!-- 替换为你们的真实图片路径，例如 images/01.jpg -->
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" alt="memory 1" />
+        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop" alt="memory 2" />
+        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop" alt="memory 3" />
+        <img src="https://images.unsplash.com/photo-1508243529287-e21914733111?q=80&w=1200&auto=format&fit=crop" alt="memory 4" />
+        <img src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?q=80&w=1200&auto=format&fit=crop" alt="memory 5" />
+        <img src="https://images.unsplash.com/photo-1442458017215-285b83f65851?q=80&w=1200&auto=format&fit=crop" alt="memory 6" />
+      </div>
+      <div class="lightbox" id="lightbox"><img alt="preview" /></div>
+    </section>
+
+    <!-- Mini Wishlist / Tasks -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">愿望清单 · Mini Bucket List 🌟</h2>
+      <div class="grid m2">
+        <div>
+          <input id="wishInput" placeholder="比如：一起去看一场演唱会" style="width:100%;padding:12px 14px;border:1px solid #f2c9da;border-radius:12px;" />
+        </div>
+        <div><button class="btn" id="addWish">添加</button></div>
+      </div>
+      <ul id="wishes" style="margin:12px 0 0; padding:0; list-style:none; display:grid; gap:8px"></ul>
+    </section>
+
+    <!-- Secret Message (Unlock by Answer) -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">小彩蛋 · Secret ✨</h2>
+      <p style="margin:0 0 8px">回答一个关于我们的题目来解锁惊喜：</p>
+      <div class="grid m2">
+        <div>
+          <label>我们第一次见面的城市是？</label>
+          <input id="riddle" placeholder="输入答案…" style="width:100%;padding:12px 14px;border:1px solid #f2c9da;border-radius:12px;" />
+        </div>
+        <div><button class="btn" id="unlock">解锁</button></div>
+      </div>
+      <div id="secret" style="display:none; margin-top:12px">
+        <p>🎁 Surprise！点一下页面任意位置有烟花～ 还有：<a href="#" id="customLink">给你的专属便签</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Made with ❤️ by <span id="sig">Jiajun</span> · <span id="year"></span>
+  </footer>
+
+  <!-- Audio: 把你的音乐放到 /audio/our-song.mp3 并替换路径 -->
+  <audio id="music" src="audio/our-song.mp3" preload="none"></audio>
+
+  <script>
+    // ===== Typewriter =====
+    const typeEl = document.getElementById('typewriter');
+    const lines = [
+      '愿你的每一天都被温柔相待。',
+      '感谢你把普通日子变成了节日。',
+      '生日快乐，今天与往后的无限个今天！'
+    ];
+    let idx=0, char=0;
+    function tick(){
+      const current = lines[idx];
+      typeEl.textContent = current.slice(0, ++char);
+      if(char === current.length){
+        setTimeout(()=>{char=0; idx=(idx+1)%lines.length;}, 1000);
+      }
+      setTimeout(tick, 80);
+    }
+    tick();
+
+    // ===== Floating hearts =====
+    const hearts = document.querySelector('.hearts');
+    setInterval(()=>{
+      const h=document.createElement('div'); h.className='heart';
+      const size = 8 + Math.random()*16; h.style.width=h.style.height=size+'px';
+      h.style.left = Math.random()*100+'vw'; h.style.bottom='-20px';
+      h.style.animationDuration = (4 + Math.random()*4)+'s';
+      hearts.appendChild(h); setTimeout(()=>h.remove(), 8000);
+    }, 600);
+
+    // ===== Lightbox =====
+    const lb = document.getElementById('lightbox');
+    const lbImg = lb.querySelector('img');
+    document.getElementById('gallery').addEventListener('click', e=>{
+      if(e.target.tagName==='IMG'){ lbImg.src=e.target.src; lb.classList.add('open'); }
+    });
+    lb.addEventListener('click', ()=>lb.classList.remove('open'));
+
+    // ===== Music =====
+    const audio = document.getElementById('music');
+    document.getElementById('playBtn').addEventListener('click', ()=>{
+      if(audio.paused){ audio.play().catch(()=>{}); } else { audio.pause(); }
+    });
+
+    // ===== Confetti (simple) =====
+    document.getElementById('confettiBtn').addEventListener('click', ()=>{
+      for(let i=0;i<120;i++) shoot(Math.random()*innerWidth, innerHeight);
+    });
+
+    // ===== Fireworks on click =====
+    const canvas = document.getElementById('fx');
+    const ctx = canvas.getContext('2d');
+    function resize(){ canvas.width=innerWidth; canvas.height=innerHeight }
+    addEventListener('resize', resize); resize();
+    const sparks=[];
+    function shoot(x,y){
+      for(let i=0;i<60;i++){
+        const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
+        sparks.push({x,y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:60+Math.random()*20, color:`hsl(${Math.random()*360},100%,70%)`});
+      }
+    }
+    addEventListener('click', e=>{ shoot(e.clientX, e.clientY); });
+    (function loop(){
+      requestAnimationFrame(loop); ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=sparks.length-1;i>=0;i--){
+        const s=sparks[i]; s.life-=1; if(s.life<=0){ sparks.splice(i,1); continue }
+        s.x+=s.vx; s.y+=s.vy; s.vy+=0.03; ctx.globalCompositeOperation='lighter';
+        ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(s.x,s.y,2,0,Math.PI*2); ctx.fill();
+      }
+    })();
+
+    // ===== Countdown to birthday (set your date) =====
+    const birthday = new Date(new Date().getFullYear(), 10-1, 20, 0,0,0); // 10月20日 00:00
+    const cdEl = document.getElementById('countdown');
+    function updateCD(){
+      const now = new Date();
+      if(now>birthday) birthday.setFullYear(now.getFullYear()+1);
+      const diff = birthday-now; const d=Math.floor(diff/86400000);
+      const h=Math.floor(diff%86400000/3600000).toString().padStart(2,'0');
+      const m=Math.floor(diff%3600000/60000).toString().padStart(2,'0');
+      const s=Math.floor(diff%60000/1000).toString().padStart(2,'0');
+      cdEl.textContent = `${d}天 ${h}:${m}:${s}`;
+    }
+    setInterval(updateCD, 1000); updateCD();
+
+    // ===== Today label & footer year =====
+    document.getElementById('todayLabel').textContent = new Date().toLocaleDateString();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== Wishes (localStorage) =====
+    const wishesUl = document.getElementById('wishes');
+    const key='wishes-v1';
+    const saved = JSON.parse(localStorage.getItem(key)||'[]');
+    function render(){
+      wishesUl.innerHTML='';
+      saved.forEach((t,i)=>{
+        const li=document.createElement('li'); li.className='card'; li.style.padding='10px 12px';
+        li.innerHTML=`<span>${t}</span> <button style="float:right" data-i="${i}" class="btn small">完成</button>`;
+        const btn=li.querySelector('button'); btn.style.padding='6px 10px'; btn.style.borderRadius='12px'; btn.style.background='#8a4a62';
+        btn.addEventListener('click',()=>{ saved.splice(i,1); localStorage.setItem(key,JSON.stringify(saved)); render(); });
+        wishesUl.appendChild(li);
+      })
+    }
+    render();
+    document.getElementById('addWish').addEventListener('click',()=>{
+      const v=document.getElementById('wishInput').value.trim(); if(!v) return; saved.push(v); localStorage.setItem(key,JSON.stringify(saved)); document.getElementById('wishInput').value=''; render();
+    });
+
+    // ===== Secret unlock =====
+    document.getElementById('unlock').addEventListener('click',()=>{
+      const ans = document.getElementById('riddle').value.trim().toLowerCase();
+      const ok = ["beijing","北京","tokyo","东京","shanghai","上海"]; // 替换成你们的正确答案候选
+      if(ok.includes(ans)){
+        document.getElementById('secret').style.display='block';
+        shoot(innerWidth/2, innerHeight/2);
+      } else {
+        alert('再想想看～ 提示：城市名');
+      }
+    });
+
+    // 自定义链接（可以放一封更长的信，或一个网盘礼物）
+    document.getElementById('customLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      alert('这里可以跳转到另一页或下载礼物文件～ 在 index.html 里替换 link 行为');
+    });
+  </script>
+</body>
+</html>

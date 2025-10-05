@@ -61,6 +61,22 @@
     canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:20}
 
     footer{padding:48px 0 72px; text-align:center; opacity:.8}
+
+    /* Heart collage */
+    .heart-wrap{display:flex; justify-content:center}
+    .heart-wall{
+      position:relative; width:min(92vw, 820px); aspect-ratio:1/1; 
+      overflow:hidden; border-radius:24px; background:#fff;
+      border:1px solid #f5dbe6; box-shadow:0 10px 30px rgba(255,111,163,.08);
+    }
+    .heart-tile{
+      position:absolute; transform:translate(-50%,-50%) rotate(var(--r,0deg));
+      border-radius:12px; overflow:hidden; box-shadow:0 6px 16px rgba(0,0,0,.08);
+      transition:transform .15s ease;
+    }
+    .heart-tile:hover{ transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1.03); }
+    .heart-tile img{ width:100%; height:100%; object-fit:cover; display:block }
+    @media (max-width:720px){ .heart-wall{ width:92vw } }
   </style>
 </head>
 <body>
@@ -83,9 +99,9 @@
     <section class="card">
       <h2 style="margin:0 0 8px">一封小情书 💌</h2>
       <p style="margin:0; line-height:1.8">
-        亲爱的 <strong>（她的名字）</strong>，<br/>
+        亲爱的 <strong>小泽衣</strong>，<br/>
         这一页，藏着我想说的每一句悄悄话。谢谢你出现在我的日常里，让普通的日子都变得发光。愿你的每一个愿望，都有人为你点亮。<br/>
-        <em>—— 署名（可以换成你的小名）</em>
+        <em>—— X </em>
       </p>
     </section>
 
@@ -100,31 +116,27 @@
         </div>
         <div class="t-item">
           <div class="t-dot"></div>
-          <h3 style="margin:0">第一次旅行 <small style="opacity:.6">2024-02-18</small></h3>
-          <p style="margin:.25rem 0 0">在海边，我们一起追着夕阳跑。</p>
-        </div>
-        <div class="t-item">
-          <div class="t-dot"></div>
           <h3 style="margin:0">今天 · 生日快乐 <small style="opacity:.6" id="todayLabel"></small></h3>
           <p style="margin:.25rem 0 0">愿你此后每一年，都被温柔以待。</p>
         </div>
       </div>
     </section>
 
-    <!-- Gallery -->
+    <!-- Gallery (auto from image/) -->
     <section class="card">
       <h2 style="margin:0 0 8px">相册 · Our Gallery 📷</h2>
-      <p class="sub" style="margin:0 0 10px">把你们的照片放进 <code>images/</code> 文件夹，然后在下面替换图片路径。</p>
-      <div class="gallery" id="gallery">
-        <!-- 替换为你们的真实图片路径，例如 images/01.jpg -->
-        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop" alt="memory 1" />
-        <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop" alt="memory 2" />
-        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop" alt="memory 3" />
-        <img src="https://images.unsplash.com/photo-1508243529287-e21914733111?q=80&w=1200&auto=format&fit=crop" alt="memory 4" />
-        <img src="https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6?q=80&w=1200&auto=format&fit=crop" alt="memory 5" />
-        <img src="https://images.unsplash.com/photo-1442458017215-285b83f65851?q=80&w=1200&auto=format&fit=crop" alt="memory 6" />
-      </div>
+      <p class="sub" style="margin:0 0 10px">把照片放进 <code>image/</code> 文件夹（建议命名 01.jpg、02.jpg…）。</p>
+      <div class="gallery" id="gallery"></div>
       <div class="lightbox" id="lightbox"><img alt="preview" /></div>
+    </section>
+
+    <!-- Heart Collage -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">爱心照片墙 ❤️</h2>
+      <p class="sub" style="margin:0 0 10px">已自动使用上方相册的图片。</p>
+      <div class="heart-wrap">
+        <div id="heartWall" class="heart-wall"></div>
+      </div>
     </section>
 
     <!-- Mini Wishlist / Tasks -->
@@ -164,6 +176,16 @@
   <audio id="music" src="audio/our-song.mp3" preload="none"></audio>
 
   <script>
+    // ===========================
+    //  自定义：照片清单来自 /image
+    //  默认尝试 01.jpg ~ 36.jpg（可增减数量和扩展名）
+    // ===========================
+    const PHOTO_LIST = Array.from({length:36}, (_,i)=>{
+      const n = String(i+1).padStart(2,'0');
+      // 你也可改成多扩展名尝试：return [`image/${n}.jpg`,`image/${n}.png`,`image/${n}.webp`]
+      return `image/${n}.jpg`;
+    });
+
     // ===== Typewriter =====
     const typeEl = document.getElementById('typewriter');
     const lines = [
@@ -192,26 +214,13 @@
       hearts.appendChild(h); setTimeout(()=>h.remove(), 8000);
     }, 600);
 
-    // ===== Lightbox =====
-    const lb = document.getElementById('lightbox');
-    const lbImg = lb.querySelector('img');
-    document.getElementById('gallery').addEventListener('click', e=>{
-      if(e.target.tagName==='IMG'){ lbImg.src=e.target.src; lb.classList.add('open'); }
-    });
-    lb.addEventListener('click', ()=>lb.classList.remove('open'));
-
     // ===== Music =====
     const audio = document.getElementById('music');
     document.getElementById('playBtn').addEventListener('click', ()=>{
       if(audio.paused){ audio.play().catch(()=>{}); } else { audio.pause(); }
     });
 
-    // ===== Confetti (simple) =====
-    document.getElementById('confettiBtn').addEventListener('click', ()=>{
-      for(let i=0;i<120;i++) shoot(Math.random()*innerWidth, innerHeight);
-    });
-
-    // ===== Fireworks on click =====
+    // ===== Fireworks & Confetti =====
     const canvas = document.getElementById('fx');
     const ctx = canvas.getContext('2d');
     function resize(){ canvas.width=innerWidth; canvas.height=innerHeight }
@@ -232,6 +241,9 @@
         ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(s.x,s.y,2,0,Math.PI*2); ctx.fill();
       }
     })();
+    document.getElementById('confettiBtn').addEventListener('click', ()=>{
+      for(let i=0;i<120;i++) shoot(Math.random()*innerWidth, innerHeight);
+    });
 
     // ===== Countdown to birthday (set your date) =====
     const birthday = new Date(new Date().getFullYear(), 10-1, 20, 0,0,0); // 10月20日 00:00
@@ -255,19 +267,19 @@
     const wishesUl = document.getElementById('wishes');
     const key='wishes-v1';
     const saved = JSON.parse(localStorage.getItem(key)||'[]');
-    function render(){
+    function renderWishes(){
       wishesUl.innerHTML='';
       saved.forEach((t,i)=>{
         const li=document.createElement('li'); li.className='card'; li.style.padding='10px 12px';
         li.innerHTML=`<span>${t}</span> <button style="float:right" data-i="${i}" class="btn small">完成</button>`;
         const btn=li.querySelector('button'); btn.style.padding='6px 10px'; btn.style.borderRadius='12px'; btn.style.background='#8a4a62';
-        btn.addEventListener('click',()=>{ saved.splice(i,1); localStorage.setItem(key,JSON.stringify(saved)); render(); });
+        btn.addEventListener('click',()=>{ saved.splice(i,1); localStorage.setItem(key,JSON.stringify(saved)); renderWishes(); });
         wishesUl.appendChild(li);
       })
     }
-    render();
+    renderWishes();
     document.getElementById('addWish').addEventListener('click',()=>{
-      const v=document.getElementById('wishInput').value.trim(); if(!v) return; saved.push(v); localStorage.setItem(key,JSON.stringify(saved)); document.getElementById('wishInput').value=''; render();
+      const v=document.getElementById('wishInput').value.trim(); if(!v) return; saved.push(v); localStorage.setItem(key,JSON.stringify(saved)); document.getElementById('wishInput').value=''; renderWishes();
     });
 
     // ===== Secret unlock =====
@@ -281,12 +293,140 @@
         alert('再想想看～ 提示：城市名');
       }
     });
-
-    // 自定义链接（可以放一封更长的信，或一个网盘礼物）
     document.getElementById('customLink').addEventListener('click', (e)=>{
       e.preventDefault();
       alert('这里可以跳转到另一页或下载礼物文件～ 在 index.html 里替换 link 行为');
     });
+
+    // =====================================================
+    //  加载 image/ 内的照片到相册；成功后构建爱心照片墙
+    //  说明：浏览器无法直接“列目录”，所以用 PHOTO_LIST 尝试加载并过滤成功项
+    // =====================================================
+    function preloadList(list){
+      return new Promise((resolve)=>{
+        if(!list || !list.length) return resolve([]);
+        const ok = [];
+        let done = 0;
+        list.forEach(src=>{
+          // 支持多后缀尝试：传入数组则逐个试
+          const tries = Array.isArray(src) ? src : [src];
+          let picked = null, i = 0, img = new Image();
+          const tryNext = ()=>{
+            if(i >= tries.length){ done++; if(done===list.length) resolve(ok); return; }
+            img = new Image();
+            img.onload = ()=>{ picked = tries[i]; ok.push(picked); done++; if(done===list.length) resolve(ok); };
+            img.onerror = ()=>{ i++; tryNext(); };
+            img.src = tries[i] + (tries[i].includes('?')?'':'?v=' + Date.now()); // 防缓存
+          };
+          tryNext();
+        });
+      });
+    }
+
+    function fillGallery(srcs){
+      const g = document.getElementById('gallery');
+      g.innerHTML = '';
+      if(!srcs.length){
+        // 兜底演示图
+        srcs = [
+          'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop'
+        ];
+      }
+      srcs.forEach(s=>{
+        const im = document.createElement('img');
+        im.src = s; im.alt = 'memory'; im.loading = 'lazy';
+        g.appendChild(im);
+      });
+
+      // 绑定灯箱
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
+      g.addEventListener('click', e=>{
+        if(e.target.tagName==='IMG'){ lbImg.src=e.target.src; lb.classList.add('open'); }
+      });
+      lb.addEventListener('click', ()=>lb.classList.remove('open'));
+    }
+
+    // ============ Heart Wall ============
+    function insideHeart(x, y){
+      const a = x*x + y*y - 1;
+      return (a*a*a - x*x*y*y*y) <= 0;
+    }
+    function buildHeartWall(){
+      const wall = document.getElementById('heartWall');
+      if(!wall) return;
+
+      // 从上方相册收集图片
+      const srcs = Array.from(document.querySelectorAll('#gallery img')).map(i=>i.src);
+      if(!srcs.length) return;
+
+      wall.innerHTML = '';
+      const rect = wall.getBoundingClientRect();
+      const W = rect.width, H = rect.height;
+      const cols = Math.max(10, Math.min(18, Math.round(W / 60)));
+      const tile = Math.floor(W / cols);
+      const rows = Math.floor(H / tile);
+      const cx = W/2, cy = H/2;
+      const xPad = (W - cols*tile)/2 + tile/2;
+      const yPad = (H - rows*tile)/2 + tile/2;
+
+      let k = 0;
+      for(let r=0; r<rows; r++){
+        for(let c=0; c<cols; c++){
+          const px = xPad + c*tile;
+          const py = yPad + r*tile;
+          const xn =  (px - cx) / (W/2);
+          const yn = -(py - cy) / (H/2) * 1.10;
+
+          if(insideHeart(xn, yn)){
+            const wrap = document.createElement('div');
+            wrap.className = 'heart-tile';
+            wrap.style.left = px + 'px';
+            wrap.style.top  = py + 'px';
+            const pad = 6;
+            const size = tile - pad;
+            wrap.style.width = size + 'px';
+            wrap.style.height= size + 'px';
+            wrap.style.setProperty('--r', (Math.random()*8-4).toFixed(2)+'deg');
+
+            const img = document.createElement('img');
+            img.src = srcs[k % srcs.length];
+            img.alt = 'memory ' + (k+1);
+            img.loading = 'lazy';
+
+            wrap.appendChild(img);
+            wall.appendChild(wrap);
+            k++;
+          }
+        }
+      }
+
+      // 点击爱心墙 → 打开灯箱
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
+      wall.addEventListener('click', e=>{
+        const tile = e.target.closest('.heart-tile');
+        if(tile){
+          lbImg.src = tile.querySelector('img').src;
+          lb.classList.add('open');
+        }
+      });
+    }
+    let _hrtTimer;
+    function rebuildHeart(){ clearTimeout(_hrtTimer); _hrtTimer = setTimeout(buildHeartWall, 150); }
+    addEventListener('resize', rebuildHeart);
+
+    (async function initPhotos(){
+      try{
+        const okSrcs = await preloadList(PHOTO_LIST);
+        fillGallery(okSrcs);
+      }catch(e){
+        fillGallery([]); 
+      }
+      buildHeartWall();
+    })();
   </script>
 </body>
 </html>

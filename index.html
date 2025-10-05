@@ -111,7 +111,7 @@
       <p style="margin:0; line-height:1.8">
         亲爱的 <strong>小泽衣</strong>，<br/>
         这一页，藏着我想说的每一句悄悄话。谢谢你出现在我的日常里，让普通的日子都变得发光。愿你的每一个愿望，都有人为你点亮。<br/>
-        <em>—— X </em>
+        <em>—— Jiajun </em>
       </p>
     </section>
 
@@ -121,7 +121,7 @@
       <div class="timeline">
         <div class="t-item">
           <div class="t-dot"></div>
-          <h3 style="margin:0">第一次见面 <small style="opacity:.6">2023-08-23</small></h3>
+          <h3 style="margin:0">第一次见面 <small style="opacity:.6">2025-10-01</small></h3>
           <p style="margin:.25rem 0 0">那天的风很温柔，你的笑也很温柔。</p>
         </div>
         <div class="t-item">
@@ -146,11 +146,6 @@
       </div>
       <div class="gallery" id="gallery"></div>
       <div class="lightbox" id="lightbox"><img alt="preview" /></div>
-
-      <details class="debug">
-        <summary>🛠 调试信息（展开查看）</summary>
-        <div class="mini" id="debugBox"></div>
-      </details>
     </section>
 
     <!-- Heart Collage (8 tiles) -->
@@ -337,7 +332,6 @@
         [0.30, 0.25], [0.70, 0.25], // 顶部两侧
         [0.15, 0.45], [0.85, 0.45], // 上中两侧
         [0.30, 0.65], [0.70, 0.65], // 中部两侧
-        [0.50, 0.82],               // 下中
         [0.50, 0.93]                // 尖端
       ];
 
@@ -382,7 +376,7 @@
 
     document.getElementById('reshuffleBtn').addEventListener('click', ()=>{
       if(!AVAILABLE_SRCS.length){ alert('还没有加载到任何图片哦～'); return; }
-      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+      HEART_SRCS = pickN(AVAILABLE_SRCS, 7);
       buildHeartWall8();
     });
 

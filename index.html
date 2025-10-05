@@ -80,7 +80,7 @@
     .heart-tile img{ width:100%; height:100%; object-fit:cover; display:block }
     @media (max-width:720px){ .heart-wall{ width:92vw } }
 
-    /* Debug panel */
+    /* Debug panel (可选：若页面没有 debugBox，也不会报错) */
     details.debug{margin-top:8px}
     details.debug summary{cursor:pointer; user-select:none; color:#8a4a62}
     .mini{font-size:12px; opacity:.8}
@@ -101,7 +101,8 @@
       <button class="btn" id="playBtn">🎵 播放/暂停我们的歌</button>
       <button class="btn" id="confettiBtn">🎉 小惊喜</button>
     </div>
-    <p class="sub">倒计时：<span id="countdown">--:--:--</span></p>
+    <!-- 这里改成“正计时”文案，更符合现在的逻辑 -->
+    <p class="sub">计时（自我们说的第一句话起）：<span id="countdown">--</span> 秒</p>
   </header>
 
   <main class="container" style="display:grid; gap:28px">
@@ -214,6 +215,7 @@
     const debugBox = document.getElementById('debugBox');
 
     function logChip(text, ok){
+      if(!debugBox) return;
       const span = document.createElement('span');
       span.className = 'chip ' + (ok ? 'ok' : 'fail');
       span.textContent = text;
@@ -243,9 +245,9 @@
       AVAILABLE_SRCS = files.map(f => { const u = URL.createObjectURL(f); OBJECT_URLS.push(u); return u; });
       updateCount();
       fillGallery(AVAILABLE_SRCS);
-      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+      HEART_SRCS = pickN(AVAILABLE_SRCS, 7);
       buildHeartWall8();
-      debugBox.innerHTML = `<div class="mini">来源：文件夹选择，共 ${AVAILABLE_SRCS.length} 张。</div>`;
+      if(debugBox) debugBox.innerHTML = `<div class="mini">来源：文件夹选择，共 ${AVAILABLE_SRCS.length} 张。</div>`;
     });
 
     // ===== 方式 B：手动列表（MANUAL_LIST）=====
@@ -256,9 +258,9 @@
         AVAILABLE_SRCS = ok;
         updateCount();
         fillGallery(AVAILABLE_SRCS);
-        HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+        HEART_SRCS = pickN(AVAILABLE_SRCS, 7);
         buildHeartWall8();
-        debugBox.innerHTML = `<div class="mini">来源：手动列表，共 ${AVAILABLE_SRCS.length} 张。</div>`;
+        if(debugBox) debugBox.innerHTML = `<div class="mini">来源：手动列表，共 ${AVAILABLE_SRCS.length} 张。</div>`;
         return true;
       }
       return false;
@@ -285,12 +287,12 @@
         AVAILABLE_SRCS = ok;
         updateCount();
         fillGallery(AVAILABLE_SRCS);
-        HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+        HEART_SRCS = pickN(AVAILABLE_SRCS, 7);
         buildHeartWall8();
-        debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">来源：自动匹配，共 ${AVAILABLE_SRCS.length} 张。</div>`);
+        if(debugBox) debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">来源：自动匹配，共 ${AVAILABLE_SRCS.length} 张。</div>`);
         return true;
       }else{
-        debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">自动匹配未找到任何图片，请检查：<br>1) <code>index.html</code> 与 <code>image/</code> 是否同级；2) 文件名/扩展名大小写；3) 尝试“从文件夹选择”；4) 或在顶部填写 <code>MANUAL_LIST</code>。</div>`);
+        if(debugBox) debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">自动匹配未找到任何图片，请检查：<br>1) <code>index.html</code> 与 <code>image/</code> 是否同级；2) 文件名/扩展名大小写；3) 尝试“从文件夹选择”；4) 或在顶部填写 <code>MANUAL_LIST</code>。</div>`);
         return false;
       }
     }
@@ -373,11 +375,11 @@
 
     document.getElementById('reshuffleBtn').addEventListener('click', ()=>{
       if(!AVAILABLE_SRCS.length){ alert('还没有加载到任何图片哦～'); return; }
-      HEART_SRCS = pickN(AVAILABLE_SRCS, 7);
+      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
       buildHeartWall8();
     });
 
-    // ===== 其他已有功能 =====
+    // ===== 打字机 & 漂浮心心 & 音乐 & 烟花 =====
     const typeEl = document.getElementById('typewriter');
     const lines = ['愿你的每一天都被温柔相待。','感谢你把普通日子变成了节日。','生日快乐，今天与往后的无限个今天！'];
     let idx=0, char=0;
@@ -403,35 +405,12 @@
         s.x+=s.vx; s.y+=s.vy; s.vy+=0.03; ctx.globalCompositeOperation='lighter'; ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(s.x,s.y,2,0,Math.PI*2); ctx.fill(); } })();
     document.getElementById('confettiBtn').addEventListener('click', ()=>{ for(let i=0;i<120;i++) shoot(Math.random()*innerWidth, innerHeight); });
 
-    const birthday = new Date(new Date().getFullYear(), 10-1, 20, 0,0,0); const cdEl = document.getElementById('countdown');
-    function updateCD(){ const now = new Date(); if(now>birthday) birthday.setFullYear(now.getFullYear()+1);
-      const diff = birthday-now; const d=Math.floor(diff/86400000);
-      const h=Math.floor(diff%86400000/3600000).toString().padStart(2,'0');
-      const m=Math.floor(diff%3600000/60000).toString().padStart(2,'0');
-      const s=Math.floor(diff%60000/1000).toString().padStart(2,'0');
-      cdEl.textContent = `${d}天 ${h}:${m}:${s}`; }
-    setInterval(updateCD, 1000); updateCD();
-
+    // ===== 今日标签 & 年份 =====
     document.getElementById('todayLabel').textContent = new Date().toLocaleDateString();
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    const wishesUl = document.getElementById('wishes'); const key='wishes-v1';
-    const saved = JSON.parse(localStorage.getItem(key)||'[]');
-    function renderWishes(){ wishesUl.innerHTML='';
-      saved.forEach((t,i)=>{ const li=document.createElement('li'); li.className='card'; li.style.padding='10px 12px';
-        li.innerHTML=`<span>${t}</span> <button style="float:right" data-i="${i}" class="btn small">完成</button>`;
-        const btn=li.querySelector('button'); btn.style.padding='6px 10px'; btn.style.borderRadius='12px'; btn.style.background='#8a4a62';
-        btn.addEventListener('click',()=>{ saved.splice(i,1); localStorage.setItem(key,JSON.stringify(saved)); renderWishes(); });
-        wishesUl.appendChild(li); }); }
-    renderWishes();
-    document.getElementById('addWish').addEventListener('click',()=>{ const v=document.getElementById('wishInput').value.trim(); if(!v) return;
-      saved.push(v); localStorage.setItem(key,JSON.stringify(saved)); document.getElementById('wishInput').value=''; renderWishes(); });
-
-    document.getElementById('unlock').addEventListener('click',()=>{ const ans = document.getElementById('riddle').value.trim().toLowerCase();
-      const ok = ["beijing","北京","tokyo","东京","shanghai","上海"];
-      if(ok.includes(ans)){ document.getElementById('secret').style.display='block'; shoot(innerWidth/2, innerHeight/2); }
-      else { alert('再想想看～ 提示：城市名'); } });
-    document.getElementById('customLink').addEventListener('click', (e)=>{ e.preventDefault();
+    // =====（如启用彩蛋）点击事件保留 =====
+    document.getElementById('customLink')?.addEventListener('click', (e)=>{ e.preventDefault();
       alert('这里可以跳转到另一页或下载礼物文件～ 在 index.html 里替换 link 行为'); });
 
     // ===== 启动流程：A(目录选择) 或 B(手动列表) 或 C(自动匹配) =====
@@ -442,6 +421,21 @@
       HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
       buildHeartWall8();
     })();
+
+    // ===== 正计时：从当年 9/30 00:00:00 到现在的秒数（只显示正数）=====
+    const cdEl = document.getElementById('countdown');
+    function getSep30ThisYear() {
+      const now = new Date();
+      return new Date(now.getFullYear(), 7, 25, 4, 0, 0); // 月份从0开始，8=9月
+    }
+    function updateCountUp() {
+      const now = new Date();
+      const start = getSep30ThisYear();
+      const seconds = now >= start ? Math.floor((now - start) / 1000) : 0;
+      cdEl.textContent = seconds.toLocaleString('zh-CN');
+    }
+    setInterval(updateCountUp, 1000);
+    updateCountUp();
 
     // 释放 object URLs
     window.addEventListener('beforeunload', ()=>{ OBJECT_URLS.forEach(u=> URL.revokeObjectURL(u)); });

@@ -9,65 +9,84 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root{ --bg:#fff7fb; --ink:#3b2a2f; --primary:#ff6fa3; --accent:#ffd1e1; }
+    :root{ --bg:#fff7fb; --ink:#3b2a2f; --ink-soft:#6a4b55; --primary:#ff6fa3; --accent:#ffd1e1; }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; color:var(--ink);
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 800px at 80% -100px, #ffe3ef 10%, transparent 50%),
-        radial-gradient(1000px 600px at -20% -200px, #ffeef6 10%, transparent 50%), var(--bg);
-    }
+    body{margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:var(--ink);
+         background:radial-gradient(1200px 800px at 80% -100px, #ffe3ef 10%, transparent 50%),
+                    radial-gradient(1000px 600px at -20% -200px, #ffeef6 10%, transparent 50%), var(--bg);}
     a{color:var(--primary)}
     .container{max-width:960px; margin:0 auto; padding:24px}
-    header{display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 16px 24px}
-    .script{font-family:"Great Vibes", cursive; font-size:56px; color:#ef3f7f; text-shadow:0 2px 0 #fff}
+    header{display:flex; flex-direction:column; align-items:center; gap:8px; padding:56px 16px 32px}
+    .script{font-family:"Great Vibes", cursive; font-size:56px; line-height:1; color:#ef3f7f; text-shadow:0 2px 0 #fff}
     .sub{opacity:.8}
-    .pill{background:var(--accent); color:#8a4a62; padding:6px 12px; border-radius:999px; font-weight:600}
-    .btn{
-      display:inline-flex; align-items:center; gap:8px; border:none; border-radius:999px;
-      padding:12px 18px; background:var(--primary); color:#fff; font-weight:700; cursor:pointer;
-      box-shadow:0 8px 20px rgba(255,111,163,.35); transition:transform .1s ease
-    }
+    .btn{display:inline-flex; align-items:center; gap:8px; border:none; border-radius:999px; padding:12px 18px; background:var(--primary); color:#fff; font-weight:600; cursor:pointer; box-shadow:0 8px 20px rgba(255,111,163,.35); transition:transform .1s ease}
     .btn:hover{transform:translateY(-1px)}
+    .pill{background:var(--accent); color:#8a4a62; padding:6px 12px; border-radius:999px; font-weight:600; display:inline-block}
     .card{background:#fff; border:1px solid #f5dbe6; border-radius:20px; padding:18px; box-shadow:0 10px 30px rgba(255,111,163,.08)}
-    footer{padding:40px 0 64px; text-align:center; opacity:.8}
-    @media (max-width:720px){ .script{font-size:44px} }
+    .grid{display:grid; gap:16px}
+    .grid.m2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.m3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    @media (max-width:720px){ .grid.m2,.grid.m3{grid-template-columns:1fr} header{padding-top:36px} .script{font-size:44px}}
 
-    /* Heart collage (only 8 tiles) */
-    .heart-wrap{display:flex; justify-content:center}
-    .heart-wall{
-      position:relative; width:min(92vw, 820px); aspect-ratio:1/1;
-      overflow:hidden; border-radius:24px; background:#fff;
-      border:1px solid #f5dbe6; box-shadow:0 10px 30px rgba(255,111,163,.08);
-    }
-    .heart-tile{
-      position:absolute; transform:translate(-50%,-50%) rotate(var(--r,0deg));
-      width:160px; height:160px; border-radius:20px; overflow:hidden;
-      box-shadow:0 10px 24px rgba(0,0,0,.12); transition:transform .15s ease, box-shadow .15s ease;
-    }
-    .heart-tile:hover{ transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1.03); box-shadow:0 12px 28px rgba(0,0,0,.16) }
-    .heart-tile img{ width:100%; height:100%; object-fit:cover; display:block }
-    .empty-hint{color:#8a4a62; text-align:center; padding:12px}
+    /* Typewriter */
+    .type{border-right:2px solid var(--primary); white-space:nowrap; overflow:hidden}
 
-    /* Gallery preview */
-    .gallery{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:8px}
-    .gallery img{width:100%; height:90px; object-fit:cover; border-radius:10px}
-    @media (max-width:720px){ .gallery{grid-template-columns:repeat(3,1fr)} }
+    /* Timeline */
+    .timeline{position:relative; margin:24px 0}
+    .timeline:before{content:""; position:absolute; left:calc(12px + .5rem); top:0; bottom:0; width:3px; background:linear-gradient(var(--primary),#ffc3d6)}
+    .t-item{position:relative; padding-left:56px; margin:22px 0}
+    .t-dot{position:absolute; width:22px; height:22px; border-radius:50%; left:0; top:2px; background:#fff; border:4px solid var(--primary); box-shadow:0 4px 20px rgba(255,111,163,.3)}
 
+    /* Gallery */
+    .gallery{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+    .gallery img{width:100%; height:200px; object-fit:cover; border-radius:14px; transition:transform .2s ease; cursor:pointer}
+    .gallery img:hover{transform:translateY(-2px)}
+    @media (max-width:720px){ .gallery{grid-template-columns:repeat(2,1fr)} }
+    
     /* Lightbox */
     .lightbox{position:fixed; inset:0; background:rgba(0,0,0,.85); display:none; align-items:center; justify-content:center; z-index:40}
     .lightbox.open{display:flex}
     .lightbox img{max-width:90vw; max-height:80vh; border-radius:12px}
 
-    /* Floating hearts + fireworks */
+    /* Floating hearts */
     .hearts{pointer-events:none; position:fixed; inset:0; overflow:hidden; z-index:10}
     .heart{position:absolute; width:14px; height:14px; transform:rotate(45deg); background:var(--primary); opacity:.6; animation:float 6s linear forwards}
     .heart:before,.heart:after{content:""; position:absolute; width:14px; height:14px; background:var(--primary); border-radius:50%}
-    .heart:before{left:-7px} .heart:after{top:-7px}
+    .heart:before{left:-7px}
+    .heart:after{top:-7px}
     @keyframes float{0%{transform:translateY(0) rotate(45deg)} 100%{transform:translateY(-120vh) rotate(45deg); opacity:0}}
+
+    /* Fireworks on click */
     canvas#fx{position:fixed; inset:0; pointer-events:none; z-index:20}
+
+    footer{padding:48px 0 72px; text-align:center; opacity:.8}
+
+    /* Heart collage (8 tiles only) */
+    .heart-topbar{display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap}
+    .heart-wrap{display:flex; justify-content:center}
+    .heart-wall{
+      position:relative; width:min(92vw, 820px); aspect-ratio:1/1; 
+      overflow:hidden; border-radius:24px; background:#fff;
+      border:1px solid #f5dbe6; box-shadow:0 10px 30px rgba(255,111,163,.08);
+    }
+    .heart-tile{
+      position:absolute; transform:translate(-50%,-50%) rotate(var(--r,0deg));
+      border-radius:16px; overflow:hidden; box-shadow:0 10px 24px rgba(0,0,0,.12);
+      transition:transform .15s ease;
+      width:160px; height:160px; /* 将由 JS 按容器自适应覆盖 */
+    }
+    .heart-tile:hover{ transform:translate(-50%,-50%) rotate(var(--r,0deg)) scale(1.03); }
+    .heart-tile img{ width:100%; height:100%; object-fit:cover; display:block }
+    @media (max-width:720px){ .heart-wall{ width:92vw } }
+
+    /* Debug panel */
+    details.debug{margin-top:8px}
+    details.debug summary{cursor:pointer; user-select:none; color:#8a4a62}
+    .mini{font-size:12px; opacity:.8}
+    .chip{display:inline-block; padding:2px 8px; border-radius:999px; background:#ffe6ef; margin-right:6px; margin-bottom:6px}
+    .chip.ok{background:#e8f9ed; color:#1a7f3c; border:1px solid #b7e3c2}
+    .chip.fail{background:#fff0f3; color:#b11a3c; border:1px solid #f6c2cf}
   </style>
 </head>
 <body>
@@ -77,98 +96,243 @@
   <header class="container">
     <span class="pill">🎂 Happy Birthday</span>
     <h1 class="script">给最爱的你</h1>
-    <p class="sub">倒计时：<span id="countdown">--:--:--</span></p>
-    <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap">
-      <label class="btn" for="dirInput">📁 从文件夹选择（选中 image/）</label>
-      <input id="dirInput" type="file" webkitdirectory directory multiple accept="image/*" style="display:none" />
-      <button class="btn" id="reshuffleBtn">🔁 换一组</button>
-      <span class="sub">已加载：<b id="countLoaded">0</b> 张</span>
+    <p class="type" id="typewriter"></p>
+    <div style="display:flex; gap:10px; margin-top:18px; flex-wrap:wrap">
+      <button class="btn" id="playBtn">🎵 播放/暂停我们的歌</button>
+      <button class="btn" id="confettiBtn">🎉 小惊喜</button>
     </div>
+    <p class="sub">倒计时：<span id="countdown">--:--:--</span></p>
   </header>
 
-  <main class="container" style="display:grid; gap:24px">
+  <main class="container" style="display:grid; gap:28px">
+    <!-- Love Letter -->
     <section class="card">
-      <h2 style="margin:0 0 8px">爱心照片墙 ❤️（8 张）</h2>
-      <p class="sub" style="margin:0 0 10px">只摆 <b>8</b> 张图，按爱心形状排列。点击“换一组”随机重排。</p>
-      <div class="heart-wrap">
-        <div id="heartWall" class="heart-wall">
-          <div class="empty-hint">还没有加载到图片～ 先点“从文件夹选择”，或把图片放在 <code>image/</code> 并使用自动匹配。</div>
+      <h2 style="margin:0 0 8px">一封小情书 💌</h2>
+      <p style="margin:0; line-height:1.8">
+        亲爱的 <strong>小泽衣</strong>，<br/>
+        这一页，藏着我想说的每一句悄悄话。谢谢你出现在我的日常里，让普通的日子都变得发光。愿你的每一个愿望，都有人为你点亮。<br/>
+        <em>—— X </em>
+      </p>
+    </section>
+
+    <!-- Timeline -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">Our Story · 我们的时间线 ⏳</h2>
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <h3 style="margin:0">第一次见面 <small style="opacity:.6">2023-08-23</small></h3>
+          <p style="margin:.25rem 0 0">那天的风很温柔，你的笑也很温柔。</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <h3 style="margin:0">今天 · 生日快乐 <small style="opacity:.6" id="todayLabel"></small></h3>
+          <p style="margin:.25rem 0 0">愿你此后每一年，都被温柔以待。</p>
         </div>
       </div>
     </section>
 
+    <!-- Gallery (auto from image/) -->
     <section class="card">
-      <h3 style="margin:0 0 6px">相册预览（全部已加载图片）</h3>
-      <div id="gallery" class="gallery"></div>
+      <h2 style="margin:0 0 8px">相册 · Our Gallery 📷</h2>
+      <p class="sub" style="margin:0 0 10px">
+        优先用“从文件夹选择”读取本地图片；若不选择，将自动尝试匹配 <code>image/</code> 下常见命名（1、01、001、IMG_001、DSC_001 等）。
+      </p>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
+        <label class="btn" for="dirInput">📁 从文件夹选择</label>
+        <input id="dirInput" type="file" webkitdirectory directory multiple accept="image/*" style="display:none" />
+        <button class="btn" id="reshuffleBtn">🔁 换一组</button>
+        <span class="mini">已加载：<b id="countLoaded">0</b> 张</span>
+      </div>
+      <div class="gallery" id="gallery"></div>
       <div class="lightbox" id="lightbox"><img alt="preview" /></div>
+
+      <details class="debug">
+        <summary>🛠 调试信息（展开查看）</summary>
+        <div class="mini" id="debugBox"></div>
+      </details>
+    </section>
+
+    <!-- Heart Collage (8 tiles) -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">爱心照片墙 ❤️</h2>
+      <p class="sub" style="margin:0 0 10px">每次随机抽 <b>8</b> 张按爱心锚点排列（相册仍显示全部）。</p>
+      <div class="heart-wrap">
+        <div id="heartWall" class="heart-wall"></div>
+      </div>
+    </section>
+
+    <!-- Mini Wishlist / Tasks -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">愿望清单 · Mini Bucket List 🌟</h2>
+      <div class="grid m2">
+        <div><input id="wishInput" placeholder="比如：一起去看一场演唱会" style="width:100%;padding:12px 14px;border:1px solid #f2c9da;border-radius:12px;" /></div>
+        <div><button class="btn" id="addWish">添加</button></div>
+      </div>
+      <ul id="wishes" style="margin:12px 0 0; padding:0; list-style:none; display:grid; gap:8px"></ul>
+    </section>
+
+    <!-- Secret Message (Unlock by Answer) -->
+    <section class="card">
+      <h2 style="margin:0 0 8px">小彩蛋 · Secret ✨</h2>
+      <p style="margin:0 0 8px">回答一个关于我们的题目来解锁惊喜：</p>
+      <div class="grid m2">
+        <div>
+          <label>我们第一次见面的城市是？</label>
+          <input id="riddle" placeholder="输入答案…" style="width:100%;padding:12px 14px;border:1px solid #f2c9da;border-radius:12px;" />
+        </div>
+        <div><button class="btn" id="unlock">解锁</button></div>
+      </div>
+      <div id="secret" style="display:none; margin-top:12px">
+        <p>🎁 Surprise！点一下页面任意位置有烟花～ 还有：<a href="#" id="customLink">给你的专属便签</a></p>
+      </div>
     </section>
   </main>
 
-  <footer>Made with ❤️ by <span id="sig">Jiajun</span> · <span id="year"></span></footer>
+  <footer>
+    Made with ❤️ by <span id="sig">Jiajun</span> · <span id="year"></span>
+  </footer>
+
+  <!-- Audio -->
   <audio id="music" src="audio/our-song.mp3" preload="none"></audio>
 
   <script>
-    // ===== 小工具 =====
-    const $ = s => document.querySelector(s);
-    const isFileProto = location.protocol === 'file:';
-    function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a }
-    function pickN(a,n){ return shuffle(a).slice(0, Math.min(n, a.length)) }
-    function clamp(v, lo, hi){ return Math.max(lo, Math.min(hi, v)) }
+    // ===== 可选手动列表（若你想完全指定文件名）=====
+    const MANUAL_LIST = []; // 例：['image/01.jpg','image/她.JPG']
 
-    // ===== 资源池 =====
-    let AVAILABLE_SRCS = [];  // 全部可用图
-    let HEART_SRCS = [];      // 当前 8 张
-    let OBJECT_URLS = [];     // 需要 revoke
-
-    // ===== 自动匹配 image/ 下常见命名 =====
-    function buildCandidates(maxN = 200){
-      const list=[];
+    // ===== 自动候选（最多 120 张）=====
+    function buildCandidates(maxN = 120){
+      const list = [];
       for(let i=1;i<=maxN;i++){
-        const n1=String(i), n2=String(i).padStart(2,'0'), n3=String(i).padStart(3,'0');
+        const n1 = String(i);
+        const n2 = String(i).padStart(2,'0');
+        const n3 = String(i).padStart(3,'0');
         list.push(
-          `image/${n2}.jpg`,`image/${n2}.jpeg`,`image/${n2}.png`,`image/${n2}.JPG`,
-          `image/${n1}.jpg`,`image/${n1}.jpeg`,`image/${n1}.png`,`image/${n1}.JPG`,
-          `image/${n3}.jpg`,`image/${n3}.jpeg`,`image/${n3}.png`,`image/${n3}.JPG`,
-          `image/IMG_${n3}.JPG`,`image/IMG_${n3}.jpg`,`image/DSC_${n3}.JPG`,`image/DSC_${n3}.jpg`
+          `image/${n2}.jpg`, `image/${n2}.jpeg`, `image/${n2}.png`, `image/${n2}.JPG`,
+          `image/${n1}.jpg`, `image/${n1}.jpeg`, `image/${n1}.png`, `image/${n1}.JPG`,
+          `image/${n3}.jpg`, `image/${n3}.jpeg`, `image/${n3}.png`, `image/${n3}.JPG`,
+          `image/IMG_${n3}.JPG`, `image/IMG_${n3}.jpg`, `image/DSC_${n3}.JPG`, `image/DSC_${n3}.jpg`
         );
       }
       return list;
     }
     const AUTO_LIST = buildCandidates(120);
 
+    const isFileProto = location.protocol === 'file:';
+    const debugBox = document.getElementById('debugBox');
+
+    function logChip(text, ok){
+      const span = document.createElement('span');
+      span.className = 'chip ' + (ok ? 'ok' : 'fail');
+      span.textContent = text;
+      debugBox.appendChild(span);
+    }
+
+    // ===== 资源池 =====
+    let AVAILABLE_SRCS = [];   // 相册全部可用图
+    let HEART_SRCS = [];       // 本次抽中的 8 张
+    let OBJECT_URLS = [];      // 通过文件夹选择产生的临时URL，离开页面要 revoke
+
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]] = [a[j],a[i]];
+      }
+      return a;
+    }
+    function pickN(arr, n){ return shuffle(arr).slice(0, Math.min(n, arr.length)); }
+
+    // ===== 方式 A：文件夹选择（最稳）=====
+    document.getElementById('dirInput').addEventListener('change', (e)=>{
+      OBJECT_URLS.forEach(u=> URL.revokeObjectURL(u)); OBJECT_URLS = [];
+      const files = Array.from(e.target.files || []).filter(f => f.type.startsWith('image/'));
+      if(!files.length){ alert('未选择任何图片'); return; }
+      AVAILABLE_SRCS = files.map(f => { const u = URL.createObjectURL(f); OBJECT_URLS.push(u); return u; });
+      updateCount();
+      fillGallery(AVAILABLE_SRCS);
+      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+      buildHeartWall8();
+      debugBox.innerHTML = `<div class="mini">来源：文件夹选择，共 ${AVAILABLE_SRCS.length} 张。</div>`;
+    });
+
+    // ===== 方式 B：手动列表（MANUAL_LIST）=====
+    async function tryManualList(){
+      if(!MANUAL_LIST.length) return false;
+      const ok = await preloadList(MANUAL_LIST);
+      if(ok.length){
+        AVAILABLE_SRCS = ok;
+        updateCount();
+        fillGallery(AVAILABLE_SRCS);
+        HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+        buildHeartWall8();
+        debugBox.innerHTML = `<div class="mini">来源：手动列表，共 ${AVAILABLE_SRCS.length} 张。</div>`;
+        return true;
+      }
+      return false;
+    }
+
+    // ===== 方式 C：自动猜测（AUTO_LIST）=====
     function preloadList(list){
       return new Promise((resolve)=>{
-        if(!list.length) return resolve([]);
-        const ok=[], total=list.length; let done=0;
+        if(!list || !list.length) return resolve([]);
+        const ok=[], total = list.length;
+        let done = 0;
         list.forEach(src=>{
-          const img=new Image();
-          img.onload = ()=>{ ok.push(src); if(++done===total) resolve(Array.from(new Set(ok))); };
-          img.onerror= ()=>{ if(++done===total) resolve(Array.from(new Set(ok))); };
-          img.src = src + (!isFileProto && !src.includes('?') ? ('?v='+Date.now()) : '');
+          const img = new Image();
+          img.onload = ()=>{ ok.push(src); done++; logChip(src, true); if(done===total) resolve(Array.from(new Set(ok))); };
+          img.onerror = ()=>{ done++; if(done<=60) logChip(src, false); if(done===total) resolve(Array.from(new Set(ok))); };
+          img.src = src + (!isFileProto && !src.includes('?') ? ('?v=' + Date.now()) : '');
         });
       });
     }
 
-    // ===== 相册预览 =====
-    function fillGallery(srcs){
-      const g = $('#gallery'); g.innerHTML='';
-      srcs.forEach(s=>{ const im=document.createElement('img'); im.src=s; im.loading='lazy'; g.appendChild(im); });
-      $('#countLoaded').textContent = srcs.length;
+    async function tryAutoList(){
+      const ok = await preloadList(AUTO_LIST);
+      if(ok.length){
+        AVAILABLE_SRCS = ok;
+        updateCount();
+        fillGallery(AVAILABLE_SRCS);
+        HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+        buildHeartWall8();
+        debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">来源：自动匹配，共 ${AVAILABLE_SRCS.length} 张。</div>`);
+        return true;
+      }else{
+        debugBox.insertAdjacentHTML('afterbegin', `<div class="mini">自动匹配未找到任何图片，请检查：<br>1) <code>index.html</code> 与 <code>image/</code> 是否同级；2) 文件名/扩展名大小写；3) 尝试“从文件夹选择”；4) 或在顶部填写 <code>MANUAL_LIST</code>。</div>`);
+        return false;
+      }
+    }
 
-      const lb=$('#lightbox'), lbImg=lb.querySelector('img');
+    // ===== 相册渲染 & 灯箱 =====
+    function fillGallery(srcs){
+      const g = document.getElementById('gallery');
+      g.innerHTML = '';
+      if(!srcs.length){
+        // 兜底演示图（离线环境不一定能加载）
+        srcs = [
+          'https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1200&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&auto=format&fit=crop',
+          'https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=1200&auto=format&fit=crop'
+        ];
+      }
+      srcs.forEach(s=>{ const im = document.createElement('img'); im.src = s; im.alt = 'memory'; im.loading = 'lazy'; g.appendChild(im); });
+
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
       g.onclick = (e)=>{ if(e.target.tagName==='IMG'){ lbImg.src=e.target.src; lb.classList.add('open'); } };
       lb.onclick = ()=> lb.classList.remove('open');
     }
 
-    // ===== 8 张的爱心墙（锚点摆放）=====
+    // ===== 8 张“锚点”爱心墙 =====
     function buildHeartWall8(){
-      const wall = $('#heartWall');
-      if(!HEART_SRCS.length){ wall.innerHTML = '<div class="empty-hint">还没有加载到图片哦～</div>'; return; }
-      wall.innerHTML='';
+      const wall = document.getElementById('heartWall');
+      if(!wall) return;
+      wall.innerHTML = '';
 
-      const rect = wall.getBoundingClientRect(), W = rect.width, H = rect.height;
+      const rect = wall.getBoundingClientRect();
+      const W = rect.width, H = rect.height;
 
-      // 8 个锚点（0~1 相对坐标），可按需要微调
+      // 8 个锚点（0~1 相对坐标，可微调）
       const anchors = [
         [0.30, 0.25], [0.70, 0.25], // 顶部两侧
         [0.15, 0.45], [0.85, 0.45], // 上中两侧
@@ -178,95 +342,117 @@
       ];
 
       // 自适应尺寸，避免重叠
-      const S = clamp(W * 0.18, 96, 180);
+      const S = Math.max(96, Math.min(180, W * 0.18));
       const margin = 6;
 
-      anchors.forEach((p,i)=>{
-        const x = clamp(p[0] * W, S/2 + margin, W - S/2 - margin);
-        const y = clamp(p[1] * H, S/2 + margin, H - S/2 - margin);
+      // 没有可用图时给提示
+      if(!HEART_SRCS.length){
+        wall.innerHTML = '<div class="mini" style="text-align:center; padding:12px; color:#8a4a62">还没有加载到图片哦～</div>';
+        return;
+      }
 
-        const tile = document.createElement('div');
-        tile.className = 'heart-tile';
-        tile.style.left = x + 'px';
-        tile.style.top  = y + 'px';
-        tile.style.width  = S + 'px';
-        tile.style.height = S + 'px';
-        tile.style.setProperty('--r', (Math.random()*6-3).toFixed(2)+'deg');
+      anchors.forEach((p,i)=>{
+        const x = Math.max(S/2 + margin, Math.min(W - S/2 - margin, p[0]*W));
+        const y = Math.max(S/2 + margin, Math.min(H - S/2 - margin, p[1]*H));
+
+        const wrap = document.createElement('div');
+        wrap.className = 'heart-tile';
+        wrap.style.left = x + 'px';
+        wrap.style.top  = y + 'px';
+        wrap.style.width  = S + 'px';
+        wrap.style.height = S + 'px';
+        wrap.style.setProperty('--r', (Math.random()*6-3).toFixed(2)+'deg');
 
         const img = document.createElement('img');
         img.src = HEART_SRCS[i % HEART_SRCS.length];
-        img.alt = 'memory '+(i+1);
-        img.loading='lazy';
+        img.alt = 'memory ' + (i+1);
+        img.loading = 'lazy';
 
-        tile.appendChild(img);
-        wall.appendChild(tile);
+        wrap.appendChild(img);
+        wall.appendChild(wrap);
       });
 
-      // 点击爱心块 → 放大预览
-      const lb = $('#lightbox'); const lbImg = lb.querySelector('img');
-      wall.onclick = (e)=>{ const t = e.target.closest('.heart-tile'); if(t){ lbImg.src = t.querySelector('img').src; lb.classList.add('open'); } };
+      // 点击爱心块 → 灯箱
+      const lb = document.getElementById('lightbox');
+      const lbImg = lb.querySelector('img');
+      wall.onclick = (e)=>{ const tile = e.target.closest('.heart-tile'); if(tile){ lbImg.src = tile.querySelector('img').src; lb.classList.add('open'); } };
     }
 
-    // ===== 目录选择（最稳）=====
-    $('#dirInput').addEventListener('change', (e)=>{
-      // 清理旧 object URLs
-      OBJECT_URLS.forEach(u=>URL.revokeObjectURL(u)); OBJECT_URLS=[];
-      const files = Array.from(e.target.files||[]).filter(f=>f.type.startsWith('image/'));
-      if(!files.length){ alert('未选择任何图片'); return; }
-      AVAILABLE_SRCS = files.map(f=>{ const u = URL.createObjectURL(f); OBJECT_URLS.push(u); return u; });
-      fillGallery(AVAILABLE_SRCS);
-      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
-      buildHeartWall8();
-    });
+    function updateCount(){ document.getElementById('countLoaded').textContent = AVAILABLE_SRCS.length; }
 
-    // ===== 换一组 =====
-    $('#reshuffleBtn').addEventListener('click', ()=>{
+    document.getElementById('reshuffleBtn').addEventListener('click', ()=>{
       if(!AVAILABLE_SRCS.length){ alert('还没有加载到任何图片哦～'); return; }
       HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
       buildHeartWall8();
     });
 
-    // ===== 初始化：自动匹配 image/，找不到再手选 =====
+    // ===== 其他已有功能 =====
+    const typeEl = document.getElementById('typewriter');
+    const lines = ['愿你的每一天都被温柔相待。','感谢你把普通日子变成了节日。','生日快乐，今天与往后的无限个今天！'];
+    let idx=0, char=0;
+    (function tick(){ const cur = lines[idx]; typeEl.textContent = cur.slice(0, ++char);
+      if(char === cur.length){ setTimeout(()=>{char=0; idx=(idx+1)%lines.length;}, 1000); }
+      setTimeout(tick, 80); })();
+
+    const hearts = document.querySelector('.hearts');
+    setInterval(()=>{ const h=document.createElement('div'); h.className='heart'; const size = 8 + Math.random()*16;
+      h.style.width=h.style.height=size+'px'; h.style.left = Math.random()*100+'vw'; h.style.bottom='-20px';
+      h.style.animationDuration = (4 + Math.random()*4)+'s'; hearts.appendChild(h); setTimeout(()=>h.remove(), 8000); }, 600);
+
+    const audio = document.getElementById('music');
+    document.getElementById('playBtn').addEventListener('click', ()=>{ if(audio.paused){ audio.play().catch(()=>{}); } else { audio.pause(); } });
+
+    const canvas = document.getElementById('fx'); const ctx = canvas.getContext('2d');
+    function resize(){ canvas.width=innerWidth; canvas.height=innerHeight } addEventListener('resize', resize); resize();
+    const sparks=[]; function shoot(x,y){ for(let i=0;i<60;i++){ const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
+      sparks.push({x,y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp, life:60+Math.random()*20, color:`hsl(${Math.random()*360},100%,70%)`}); } }
+    addEventListener('click', e=>{ shoot(e.clientX, e.clientY); });
+    (function loop(){ requestAnimationFrame(loop); ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.life-=1; if(s.life<=0){ sparks.splice(i,1); continue }
+        s.x+=s.vx; s.y+=s.vy; s.vy+=0.03; ctx.globalCompositeOperation='lighter'; ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(s.x,s.y,2,0,Math.PI*2); ctx.fill(); } })();
+    document.getElementById('confettiBtn').addEventListener('click', ()=>{ for(let i=0;i<120;i++) shoot(Math.random()*innerWidth, innerHeight); });
+
+    const birthday = new Date(new Date().getFullYear(), 10-1, 20, 0,0,0); const cdEl = document.getElementById('countdown');
+    function updateCD(){ const now = new Date(); if(now>birthday) birthday.setFullYear(now.getFullYear()+1);
+      const diff = birthday-now; const d=Math.floor(diff/86400000);
+      const h=Math.floor(diff%86400000/3600000).toString().padStart(2,'0');
+      const m=Math.floor(diff%3600000/60000).toString().padStart(2,'0');
+      const s=Math.floor(diff%60000/1000).toString().padStart(2,'0');
+      cdEl.textContent = `${d}天 ${h}:${m}:${s}`; }
+    setInterval(updateCD, 1000); updateCD();
+
+    document.getElementById('todayLabel').textContent = new Date().toLocaleDateString();
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    const wishesUl = document.getElementById('wishes'); const key='wishes-v1';
+    const saved = JSON.parse(localStorage.getItem(key)||'[]');
+    function renderWishes(){ wishesUl.innerHTML='';
+      saved.forEach((t,i)=>{ const li=document.createElement('li'); li.className='card'; li.style.padding='10px 12px';
+        li.innerHTML=`<span>${t}</span> <button style="float:right" data-i="${i}" class="btn small">完成</button>`;
+        const btn=li.querySelector('button'); btn.style.padding='6px 10px'; btn.style.borderRadius='12px'; btn.style.background='#8a4a62';
+        btn.addEventListener('click',()=>{ saved.splice(i,1); localStorage.setItem(key,JSON.stringify(saved)); renderWishes(); });
+        wishesUl.appendChild(li); }); }
+    renderWishes();
+    document.getElementById('addWish').addEventListener('click',()=>{ const v=document.getElementById('wishInput').value.trim(); if(!v) return;
+      saved.push(v); localStorage.setItem(key,JSON.stringify(saved)); document.getElementById('wishInput').value=''; renderWishes(); });
+
+    document.getElementById('unlock').addEventListener('click',()=>{ const ans = document.getElementById('riddle').value.trim().toLowerCase();
+      const ok = ["beijing","北京","tokyo","东京","shanghai","上海"];
+      if(ok.includes(ans)){ document.getElementById('secret').style.display='block'; shoot(innerWidth/2, innerHeight/2); }
+      else { alert('再想想看～ 提示：城市名'); } });
+    document.getElementById('customLink').addEventListener('click', (e)=>{ e.preventDefault();
+      alert('这里可以跳转到另一页或下载礼物文件～ 在 index.html 里替换 link 行为'); });
+
+    // ===== 启动流程：A(目录选择) 或 B(手动列表) 或 C(自动匹配) =====
     (async function init(){
-      const ok = await preloadList(AUTO_LIST);
-      if(ok.length){
-        AVAILABLE_SRCS = ok;
-        fillGallery(AVAILABLE_SRCS);
-        HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
-        buildHeartWall8();
-      }
-
-      // 装饰：年份、倒计时、烟花、小心心
-      document.getElementById('year').textContent = new Date().getFullYear();
-      const cdEl = document.getElementById('countdown');
-      const birthday = new Date(new Date().getFullYear(), 10-1, 20, 0,0,0); // 改成你的日期
-      function updateCD(){
-        const now=new Date(); if(now>birthday) birthday.setFullYear(now.getFullYear()+1);
-        const diff=birthday-now, d=Math.floor(diff/86400000),
-          h=Math.floor(diff%86400000/3600000).toString().padStart(2,'0'),
-          m=Math.floor(diff%3600000/60000).toString().padStart(2,'0'),
-          s=Math.floor(diff%60000/1000).toString().padStart(2,'0');
-        cdEl.textContent = `${d}天 ${h}:${m}:${s}`;
-      }
-      setInterval(updateCD,1000); updateCD();
-
-      setInterval(()=>{ const h=document.createElement('div'); h.className='heart'; const size=8+Math.random()*16;
-        h.style.width=h.style.height=size+'px'; h.style.left=Math.random()*100+'vw'; h.style.bottom='-20px';
-        h.style.animationDuration=(4+Math.random()*4)+'s';
-        document.querySelector('.hearts').appendChild(h); setTimeout(()=>h.remove(),8000); },600);
-
-      const canvas=document.getElementById('fx'), ctx=canvas.getContext('2d');
-      function resize(){ canvas.width=innerWidth; canvas.height=innerHeight } addEventListener('resize', resize); resize();
-      const sparks=[];
-      function shoot(x,y){ for(let i=0;i<60;i++){ const a=Math.random()*Math.PI*2, sp=2+Math.random()*5;
-        sparks.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,life:60+Math.random()*20,color:`hsl(${Math.random()*360},100%,70%)`}); } }
-      addEventListener('click', e=>{ shoot(e.clientX, e.clientY); });
-      (function loop(){ requestAnimationFrame(loop); ctx.clearRect(0,0,canvas.width,canvas.height);
-        for(let i=sparks.length-1;i>=0;i--){ const s=sparks[i]; s.life-=1; if(s.life<=0){ sparks.splice(i,1); continue }
-          s.x+=s.vx; s.y+=s.vy; s.vy+=0.03; ctx.globalCompositeOperation='lighter'; ctx.fillStyle=s.color; ctx.beginPath(); ctx.arc(s.x,s.y,2,0,Math.PI*2); ctx.fill(); } })();
+      if(await tryManualList()) return;
+      await tryAutoList();
+      if(!AVAILABLE_SRCS.length){ fillGallery([]); } // 演示图兜底
+      HEART_SRCS = pickN(AVAILABLE_SRCS, 8);
+      buildHeartWall8();
     })();
 
-    // ===== 清理对象 URL =====
+    // 释放 object URLs
     window.addEventListener('beforeunload', ()=>{ OBJECT_URLS.forEach(u=> URL.revokeObjectURL(u)); });
   </script>
 </body>
